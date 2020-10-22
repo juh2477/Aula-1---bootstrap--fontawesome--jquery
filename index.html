@@ -1,0 +1,147 @@
+<!--Tipo do HTML na versão 5.-->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"><!--Configura a codificação dos caracteres como ç, á, â =  código do UTF-8.-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--Definição da largura da página com base no dispositivo. Definir zoom como 100%.-->
+    <title>Cálculo do salário</title>
+
+    <!--CSS-->
+    <link rel="stylesheet" href="bootstrap-4.0.0/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/128830a3e1.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body background="https://maturitha.com.br/wp-content/uploads/2015/06/fundo-site-maturitha.png">
+    <!-- menu nav -->
+    <nav> 
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active bg-info" href="index.html">Cálculo</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-info" href="#">Funcionário</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Sobre</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- dados do funcionario -->
+        <form>
+            <div class="form-group">
+                <h4><i class="far fa-user"></i> Dados do Funcionário</h4>
+            </div>
+
+            <div class="form-group">
+                <label>Nome</label>
+                <input class="form-control bg-light" type="text" id="nome">
+            </div>
+            <div class="form-group">
+                <label>Valor da Hora</label>
+                <input class="form-control bg-light" type="number" id="valorDaHora" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Horas Trabalhadas</label>
+                <input class="form-control bg-light" type="number" id="horasTrabalhadas" step="0.01">
+            </div>
+
+            <div class="alert alert-danger msg" role="alert" id="msgErro">
+                Preencha os campos corretamente!
+            </div>
+            <div class="alert alert-success msg" role="alert" id="msgSucesso">
+                Cálculo realizado com sucesso!!!
+            </div>
+
+            <div class="btns">
+                <button type="reset-all" class="btn btn-secondary btn-align"><i class="fas fa-eraser"></i> Limpar</button>
+                <button type="button" class="btn btn-info btn-align" onclick = "calcularSalario()"><i class="fas fa-square-root-alt"></i> Calcular</button>
+            </div>
+        </form>
+        <!-- resultados -->
+        <form>
+            <div class="form-group">
+                <h4><i class="fas fa-donate"></i> Cálculo do sálario</h4>
+            </div>
+           
+            <div class="form-group">
+                <label>Salário Bruto</label>
+                <input class="form-control" type="number" id="salarioBruto" readonly>
+            </div>
+            <div class="form-group">
+                <label>IRRF</label>
+                <input class="form-control" type="text" id="irrf" readonly>
+            </div>
+            <div class="form-group">
+                <label>Gratificação</label>
+                <input class="form-control" type="number" id="gratificacao" readonly>
+            </div>
+            <div class="form-group">
+                <label>Salário Líquido</label>
+                <input class="form-control" type="number" id="salarioLiquido" readonly>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        /* botao para calcular */
+        const calcularSalario = function(){
+            let nome = document.getElementById('nome').value
+            let ValorDaHora = document.getElementById('valorDaHora').value
+            let HorasTrabalhadas = document.getElementById('horasTrabalhadas').value
+
+            if (nome == "" || ValorDaHora == "" || HorasTrabalhadas == ""){
+                $('#msgErro').slideDown(400).delay(2000).slideUp(400)
+            }else{
+                $('#msgSucesso').slideDown(400).delay(2000).slideUp(400)
+                /* salario bruto */
+                let salarioBruto = parseFloat(ValorDaHora) * parseFloat(HorasTrabalhadas)
+                document.getElementById('salarioBruto').value = salarioBruto.toFixed(2)
+                /* irrf */
+                if(salarioBruto >= 4664.68){
+                    let IRRF = (salarioBruto * (27.5/100))
+                    document.getElementById('irrf').value = parseFloat(IRRF).toFixed(2)
+                }else if(salarioBruto < 4664.68 && salarioBruto >= 3751.06){
+                    let IRRF = (salarioBruto * (22.5/100))
+                    document.getElementById('irrf').value = parseFloat(IRRF).toFixed(2)
+                }else if(salarioBruto < 3751.06 && salarioBruto >= 2826.66){
+                    let IRRF = (salarioBruto * (15.00/100))
+                    document.getElementById('irrf').value = parseFloat(IRRF).toFixed(2)
+                }else if(salarioBruto < 2826.66 && salarioBruto >= 1903.99){
+                    let IRRF = (salarioBruto * (7.5/100))
+                    document.getElementById('irrf').value = parseFloat(IRRF).toFixed(2)
+                }else{
+                    const IRRF = "Isento"
+                    document.getElementById('irrf').value = IRRF
+                }
+                /* gratificacao */
+                if(HorasTrabalhadas >= 160){
+                    let gratificacao = (salarioBruto * (15/100))
+                    document.getElementById('gratificacao').value = gratificacao.toFixed(2)
+                }else{
+                    let gratificacao = 0
+                    document.getElementById('gratificacao').value = gratificacao.toFixed(2)
+                }
+                /* salario liquido */
+                // let gratificacao = document.getElementById('gratificacao').value
+                // let IRRF = document.getElementById('irrf').value
+                // if(IRRF != "Isento"){
+                //     let salarioLiquido = ((salarioBruto + gratificacao) - parseFloat(IRRF))
+                //     document.getElementById('salarioLiquido').value = salarioLiquido.toFixed(2)
+                // }else{
+                //     let salarioLiquido = (salarioBruto + gratificacao)
+                //     document.getElementById('salarioLiquido').value = salarioLiquido.toFixed(2)
+                // }
+            }
+        }
+
+    </script>
+
+    <!--JS-->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="bootstrap-4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>
